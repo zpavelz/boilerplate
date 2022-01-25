@@ -49,7 +49,7 @@
         "symfony/polyfill-php80": "*"
     },
     "scripts": {
-        "psalm": "vendor/bin/psalm -c psalm.xml",
+        "psalm": "vendor/bin/psalm -c psalm.xml --show-info=true",
         "tests": "php ./vendor/bin/phpunit",
         "auto-scripts": {
             "cache:clear": "symfony-cmd",

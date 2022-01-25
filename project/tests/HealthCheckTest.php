@@ -2,13 +2,18 @@
 
 use App\HealthCheck\Service\HealthCheckService;
 use Symfony\Bundle\FrameworkBundle\Test\KernelTestCase;
+use Symfony\Component\HttpKernel\KernelInterface;
+use Symfony\Bundle\FrameworkBundle\Console\Application as ConsoleApplication;
+use Symfony\Component\Console\Tester\CommandTester;
 
 class HealthCheckTest extends KernelTestCase
 {
+    protected KernelInterface $app;
+
     public function setUp(): void
     {
         parent::setUp();
-        self::bootKernel();
+        $this->app = self::bootKernel();
     }
 
     public function testHealthyEnv()
@@ -40,5 +45,21 @@ class HealthCheckTest extends KernelTestCase
             ->willReturn($expectedString)
         ;
         $this->assertSame($expectedString, $service->getPayload());
+    }
+
+    public function testHealthyCli()
+    {
+        $application = new ConsoleApplication($this->app);
+        $command = $application->find('health-check:run');
+        $commandTester = new CommandTester($command);
+        $commandTester->execute([]);
+
+        $commandTester->assertCommandIsSuccessful();
+        $this->assertStringContainsString(
+            static::getContainer()
+                ->get(HealthCheckService::class)
+                ->getPayload(),
+            $commandTester->getDisplay()
+        );
     }
 }
