@@ -1,0 +1,29 @@
+security:
+    enable_authenticator_manager: true
+    providers:
+        users_in_memory: { memory: null }
+        guard_provider:
+            id: App\Common\Security\GuardProvider
+    firewalls:
+        dev:
+            pattern: ^/(_(profiler|wdt)|css|images|js)/
+            security: false
+
+        api_doc:
+            pattern: ^/api/doc$
+            security: false
+
+        api:
+            pattern: ^/api/
+            security: true
+            custom_authenticators:
+                - App\Common\Security\ApiAuthenticator
+            logout: ~
+            provider: guard_provider
+
+        main:
+            lazy: true
+            provider: users_in_memory
+
+    access_control:
+        - { path: ^/api, roles: ROLE_USER }

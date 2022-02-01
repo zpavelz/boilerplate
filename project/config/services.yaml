@@ -28,3 +28,8 @@ services:
         public: true
         arguments:
             - '%env(HEALTH_CHECK_PAYLOAD)%'
+
+    App\Common\Security\GuardUser:
+        arguments:
+            - '%env(GUARD_USER_TOKEN_KEY)%'
+            - '%env(GUARD_USER_TOKEN_VALUE)%'
